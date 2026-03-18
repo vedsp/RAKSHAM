@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Private test scripts (contain API keys)
+test_gemini2.js
+test_api.js
