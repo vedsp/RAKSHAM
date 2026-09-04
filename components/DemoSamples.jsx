@@ -42,7 +42,7 @@ export default function DemoSamples({ onSelectSample, trySampleLabel }) {
               />
             </div>
             
-            <p className="text-sm text-slate-300 font-bold leading-relaxed relative z-10 mb-4 h-10 overflow-hidden line-clamp-2">
+            <p className="text-sm text-slate-100 font-semibold leading-relaxed relative z-10 mb-4 h-10 overflow-hidden line-clamp-2">
               "{truncateText(sample.text, 60)}"
             </p>
             

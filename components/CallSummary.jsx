@@ -13,14 +13,28 @@ export default function CallSummary({
   strings,
   appUrl,
 }) {
+  // Live call chunks use threatScores (0-10), text/audio uses confidenceScore (0-100).
+  // Derive a unified 0-100 score from whichever is available.
+  const chunkScore = (c) => {
+    if (c.confidenceScore != null) return c.confidenceScore;
+    if (c.threatScores) {
+      const { urgency = 0, impersonation = 0, dataRequest = 0 } = c.threatScores;
+      return Math.round(Math.max(urgency, impersonation, dataRequest) * 10);
+    }
+    return 0;
+  };
+
   const chartData = chunks.map((c) => ({
     chunk: `#${c.chunkNumber}`,
-    score: c.confidenceScore,
-    time: formatDuration(c.chunkNumber * 30),
+    score: chunkScore(c),
+    time: formatDuration(c.chunkNumber * 10),
   }));
 
-  const peakScore = Math.max(...chunks.map((c) => c.confidenceScore), 0);
-  const fullTranscript = chunks.map((c) => c.transcript).join('\n\n');
+  const peakScore = Math.max(...chunks.map(chunkScore), 0);
+  const fullTranscript = chunks
+    .map((c) => c.transcript)
+    .filter(Boolean)
+    .join('\n\n');
 
   const handleDownload = () => {
     const report = {
@@ -30,7 +44,7 @@ export default function CallSummary({
       chunksAnalyzed: chunks.length,
       chunks: chunks.map((c) => ({
         chunkNumber: c.chunkNumber,
-        time: formatDuration(c.chunkNumber * 30),
+        time: formatDuration(c.chunkNumber * 10),
         riskLevel: c.riskLevel,
         confidenceScore: c.confidenceScore,
         transcript: c.transcript,

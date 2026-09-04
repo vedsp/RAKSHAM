@@ -5,27 +5,7 @@ import { Menu, X, ArrowUpRight } from 'lucide-react';
 import LanguageSelector from './LanguageSelector.jsx';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const RakshamLogo = ({ className = "w-10 h-10" }) => (
-  <div className={`relative ${className} flex items-center justify-center group overflow-visible`}>
-    {/* Shield Base */}
-    <div className="absolute inset-0 bg-gradient-to-br from-indigo-950 to-indigo-800 rounded-xl overflow-hidden shadow-lg group-hover:scale-110 transition-transform">
-       <div className="absolute top-0 right-0 w-full h-full bg-[var(--brand-gradient)] opacity-30 mix-blend-overlay" />
-    </div>
-    
-    {/* Magnifying Glass & Eye Icon */}
-    <div className="relative z-10 text-white flex items-center justify-center translate-y-[2px]">
-       <svg viewBox="0 0 24 24" className="w-2/3 h-2/3" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="11" cy="11" r="8" />
-          <line x1="21" y1="21" x2="16.65" y2="16.65" />
-          <circle cx="11" cy="11" r="2" fill="currentColor" />
-       </svg>
-    </div>
-
-    {/* Decorative Elements (Concept of Vernacular) */}
-    <div className="absolute -top-1 -right-1 text-[8px] font-bold text-indigo-400 opacity-60 pointer-events-none">र</div>
-    <div className="absolute -bottom-1 -left-1 text-[8px] font-bold text-purple-400 opacity-60 pointer-events-none">த</div>
-  </div>
-);
+import RakshamLogo from './RakshamLogo.jsx';
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -63,9 +43,9 @@ export default function NavBar() {
             
             <button 
               onClick={() => setIsOpen(!isOpen)}
-              className="flex items-center gap-3 group focus:outline-none"
+              className="flex items-center gap-3 group focus:outline-none cursor-pointer"
             >
-              <div className="relative w-12 h-12 flex items-center justify-center bg-white border border-slate-200 rounded-full shadow-lg transition-transform group-hover:scale-110 active:scale-95">
+              <div className="relative w-12 h-12 flex items-center justify-center bg-white border border-slate-200 rounded-full shadow-md transition-all duration-150 ease-out group-hover:scale-105 group-hover:border-slate-400 group-hover:shadow-lg active:scale-95">
                 <AnimatePresence mode="wait">
                   {isOpen ? (
                     <motion.div key="close" initial={{ opacity: 0, rotate: -90 }} animate={{ opacity: 1, rotate: 0 }} exit={{ opacity: 0, rotate: 90 }}>

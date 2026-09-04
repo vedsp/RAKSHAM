@@ -3,12 +3,15 @@
 import { motion } from 'framer-motion';
 
 export default function HighlightedText({ text, highlightedPhrases }) {
-  if (!highlightedPhrases || highlightedPhrases.length === 0) {
+  // Filter out any malformed entries missing a phrase
+  const validPhrases = (highlightedPhrases || []).filter((p) => p && typeof p.phrase === 'string' && p.phrase.trim() !== '');
+
+  if (!validPhrases || validPhrases.length === 0) {
     return <p className="text-slate-700 text-lg leading-relaxed whitespace-pre-wrap font-medium">{text}</p>;
   }
 
   // Build regex from all phrases
-  const escapedPhrases = highlightedPhrases.map((p) =>
+  const escapedPhrases = validPhrases.map((p) =>
     p.phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
   );
   const pattern = new RegExp(`(${escapedPhrases.join('|')})`, 'gi');
@@ -23,7 +26,7 @@ export default function HighlightedText({ text, highlightedPhrases }) {
   return (
     <p className="text-slate-700 text-lg leading-relaxed whitespace-pre-wrap font-medium">
       {parts.map((part, i) => {
-        const match = highlightedPhrases.find(
+        const match = validPhrases.find(
           (p) => p.phrase.toLowerCase() === part.toLowerCase()
         );
         if (match) {

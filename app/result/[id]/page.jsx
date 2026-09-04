@@ -112,9 +112,9 @@ export default function ResultPage() {
       <div className="flex items-center justify-between mb-10">
         <button 
           onClick={() => router.push('/analyze')}
-          className="flex items-center gap-2 text-slate-500 font-bold hover:text-slate-900 transition-colors"
+          className="flex items-center gap-2 bg-slate-900 text-white font-bold px-5 py-2.5 rounded-full hover:bg-slate-700 active:scale-95 transition-all shadow-sm"
         >
-          <ArrowLeft className="w-5 h-5" />
+          <ArrowLeft className="w-4 h-4" />
           Back
         </button>
         <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 text-slate-600 border border-slate-200 text-xs font-bold uppercase tracking-widest leading-none">
@@ -210,14 +210,17 @@ export default function ResultPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="bg-indigo-900 rounded-[2.5rem] p-8 text-white shadow-xl relative overflow-hidden group"
+            className="bg-indigo-950 rounded-[2.5rem] p-6 text-white shadow-xl relative overflow-hidden group border border-indigo-800/50"
           >
             <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/20 rounded-full blur-3xl group-hover:bg-indigo-500/30 transition-colors" />
-            <h3 className="text-xs font-bold text-indigo-300 uppercase tracking-widest mb-6 block relative z-10">Safety Profile</h3>
-            <div className="relative z-10 scale-110 mb-6">
+            <div className="flex justify-between items-center mb-2 relative z-10">
+              <h3 className="text-xs font-bold text-indigo-300 uppercase tracking-widest block">Safety Profile</h3>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-400 bg-indigo-900/80 px-2.5 py-1 rounded-full border border-indigo-700/50">Radar View</span>
+            </div>
+            <div className="relative z-10">
               <ThreatRadar threatScores={result.threatScores} lightMode={false} />
             </div>
-            <p className="text-xs text-indigo-200 mt-4 leading-relaxed font-medium">
+            <p className="text-[11px] text-indigo-200/70 mt-2 leading-relaxed font-medium text-center">
                Patterns matching common phishing, impersonation, and pressure tactics.
             </p>
           </motion.div>

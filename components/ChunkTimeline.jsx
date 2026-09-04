@@ -15,9 +15,15 @@ export default function ChunkTimeline({
   analyzingLabel,
 }) {
   const riskIcon = {
+    // Text/audio analysis labels
     SAFE:      '🟢',
-    SUSPICIOUS: '🟡',
-    HIGH_RISK:  '🔴',
+    SUSPICIOUS:'🟡',
+    HIGH_RISK: '🔴',
+    // Live call labels
+    LOW:       '🟢',
+    MEDIUM:    '🟡',
+    HIGH:      '🔴',
+    CRITICAL:  '🆘',
   };
 
   // Most recent first
@@ -87,7 +93,8 @@ export default function ChunkTimeline({
                   className="text-sm font-bold"
                   style={{ color: riskColor(chunk.riskLevel) }}
                 >
-                  {chunk.riskLevel.replace('_', ' ')} {chunk.confidenceScore}%
+                  {chunk.riskLevel.replace('_', ' ')}
+                  {chunk.confidenceScore != null ? ` ${chunk.confidenceScore}%` : ''}
                 </span>
               </div>
 
@@ -100,7 +107,9 @@ export default function ChunkTimeline({
               {chunk.highlightedPhrases && chunk.highlightedPhrases.length > 0 && (
                 <p className="text-xs text-slate-300">
                   <span className="text-slate-500">Detected: </span>
-                  {chunk.highlightedPhrases.map((p) => `"${p.phrase}"`).join(', ')}
+                  {chunk.highlightedPhrases
+                    .map((p) => `"${typeof p === 'string' ? p : p.phrase}"`)
+                    .join(', ')}
                 </p>
               )}
             </motion.div>
@@ -111,7 +120,7 @@ export default function ChunkTimeline({
       {/* Empty state */}
       {chunks.length === 0 && analyzingChunk === null && (
         <div className="text-center py-8 text-slate-500 text-sm">
-          Fragment results will appear here every {8} seconds during recording
+        Fragment results will appear here every 10 seconds during recording
         </div>
       )}
     </div>

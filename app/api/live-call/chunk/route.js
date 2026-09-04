@@ -33,6 +33,23 @@ export async function POST(request) {
       return NextResponse.json(mockScore);
     }
 
+    // If Groq is missing but Gemini is present, we can't transcribe → return graceful no-op
+    if (!isGroqConfigured()) {
+      console.warn(`[Fragment ${fragmentIndex}] Groq not configured — skipping transcription.`);
+      return NextResponse.json({
+        chunkNumber,
+        fragmentIndex,
+        transcript: '',
+        riskLevel: 'LOW',
+        threatScores: { urgency: 0, impersonation: 0, dataRequest: 0 },
+        detectedTactics: [],
+        highlightedPhrases: [],
+        alertMessage: null,
+        silent: true,
+        noGroq: true,
+      });
+    }
+
     const mimeType = audioFile.type || 'audio/webm';
     console.log(`🎙️ [Fragment ${fragmentIndex}] Audio size: ${audioFile.size} bytes, Type: ${mimeType}`);
 
@@ -84,7 +101,11 @@ export async function POST(request) {
       transcript: analysis.transcript || transcript || '',
       riskLevel: analysis.riskLevel,
       threatScores: analysis.threatScores,
-      detectedTactics: analysis.detectedTactics,
+      detectedTactics: analysis.detectedTactics || [],
+      // Normalise to a consistent shape for the frontend (plain strings → string items)
+      highlightedPhrases: (analysis.detectedTactics || []).map((t) =>
+        typeof t === 'string' ? t : t
+      ),
       alertMessage: analysis.alertMessage,
       silent: analysis.silent,
     };

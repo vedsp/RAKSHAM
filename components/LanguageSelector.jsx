@@ -31,6 +31,8 @@ export default function LanguageSelector() {
   const selectLanguage = (lang) => {
     setCurrent(lang);
     localStorage.setItem('phishshield-lang', lang);
+    window.dispatchEvent(new Event('storage'));
+    window.dispatchEvent(new Event('language-change'));
     setOpen(false);
     window.location.reload();
   };

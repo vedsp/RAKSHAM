@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { ShieldAlert, PhoneOff, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import RakshamLogo from './RakshamLogo.jsx';
 
 export default function AlertOverlay({
   visible,
@@ -68,9 +69,9 @@ export default function AlertOverlay({
             <motion.div
               animate={{ y: [0, -20, 0] }}
               transition={{ duration: 1, repeat: Infinity }}
-              className="w-32 h-32 mx-auto bg-white rounded-[2.5rem] flex items-center justify-center shadow-2xl"
+              className="w-32 h-32 mx-auto bg-white rounded-[2.5rem] flex items-center justify-center shadow-2xl p-6"
             >
-              <ShieldAlert className="w-16 h-16 text-rose-600" />
+              <RakshamLogo className="w-full h-full" color="#e11d48" />
             </motion.div>
 
             <div className="space-y-4">

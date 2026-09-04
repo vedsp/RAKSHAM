@@ -7,24 +7,8 @@ import { Shield, ArrowRight, Mic, Search, Globe, CheckCircle, Sparkles, Trending
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 import { getUIStrings, detectUILanguage } from '@/lib/ui-strings.js';
+import RakshamLogo from '@/components/RakshamLogo.jsx';
 import DemoSamples from '@/components/DemoSamples.jsx';
-
-const RakshamLogo = ({ className = "w-10 h-10" }) => (
-  <div className={`relative ${className} flex items-center justify-center group overflow-visible`}>
-    <div className="absolute inset-0 bg-gradient-to-br from-indigo-950 to-indigo-800 rounded-3xl overflow-hidden shadow-2xl group-hover:rotate-3 transition-transform">
-       <div className="absolute top-0 right-0 w-full h-full bg-[var(--brand-gradient)] opacity-40 mix-blend-overlay" />
-    </div>
-    <div className="relative z-10 text-white flex items-center justify-center translate-y-[2px]">
-       <svg viewBox="0 0 24 24" className="w-2/3 h-2/3" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="11" cy="11" r="8" />
-          <line x1="21" y1="21" x2="16.65" y2="16.65" />
-          <circle cx="11" cy="11" r="3" fill="currentColor" />
-       </svg>
-    </div>
-    <div className="absolute -top-2 -right-2 text-xs font-black text-indigo-400 opacity-80 animate-pulse">र</div>
-    <div className="absolute -bottom-2 -left-2 text-xs font-black text-purple-400 opacity-80 animate-bounce">த</div>
-  </div>
-);
 
 export default function HomePage() {
   const [lang, setLang] = useState('en');
@@ -32,7 +16,14 @@ export default function HomePage() {
   const s = getUIStrings(lang);
 
   useEffect(() => {
-    setLang(detectUILanguage());
+    const syncLang = () => setLang(detectUILanguage());
+    syncLang();
+    window.addEventListener('storage', syncLang);
+    window.addEventListener('language-change', syncLang);
+    return () => {
+      window.removeEventListener('storage', syncLang);
+      window.removeEventListener('language-change', syncLang);
+    };
   }, []);
 
   const handleSampleSelect = (text) => {
@@ -42,11 +33,10 @@ export default function HomePage() {
 
   return (
     <div className="relative bg-white min-h-screen overflow-hidden selection:bg-indigo-100 selection:text-indigo-900">
-      {/* Dynamic Background Blobs */}
-      <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
-        <div className="absolute -top-[10%] -left-[10%] w-[60%] h-[60%] bg-indigo-50/50 morphing-blob blur-[120px] opacity-60" />
-        <div className="absolute top-[40%] -right-[10%] w-[50%] h-[50%] bg-rose-50/50 morphing-blob blur-[120px] opacity-40" style={{ animationDelay: '-5s' }} />
-        <div className="absolute -bottom-[10%] left-[20%] w-[40%] h-[40%] bg-blue-50/50 morphing-blob blur-[120px] opacity-30" style={{ animationDelay: '-10s' }} />
+      {/* Static Subtle Background Gradients (No heavy blur calculations) */}
+      <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden opacity-30">
+        <div className="absolute -top-[10%] -left-[10%] w-[50%] h-[50%] bg-indigo-100 rounded-full" />
+        <div className="absolute top-[40%] -right-[10%] w-[40%] h-[40%] bg-purple-100 rounded-full" />
       </div>
 
       {/* Hero Section */}
@@ -58,37 +48,37 @@ export default function HomePage() {
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="text-left"
           >
-            <div className="flex items-center gap-4 mb-8">
-              <RakshamLogo className="w-20 h-20" />
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-50 border border-slate-100">
-                <Sparkles className="w-4 h-4 text-indigo-600 animate-pulse" />
-                <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">{s.tagline}</span>
+            <div className="flex items-center gap-4 mb-6">
+              <RakshamLogo className="w-14 h-14" />
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-50 border border-slate-200 shadow-sm">
+                <span className="w-2 h-2 rounded-full bg-[#6D4AFF] shrink-0" />
+                <span className="text-[11px] font-extrabold uppercase tracking-wider">
+                  <span className="text-[#10172A]">DIGITAL SAFETY</span>
+                  <span className="text-slate-400 mx-1.5 font-normal">·</span>
+                  <span className="text-[#6D4AFF]">4+ LANGUAGES</span>
+                </span>
               </div>
             </div>
 
-            <h1 className="text-6xl sm:text-8xl lg:text-[10rem] display-bold text-slate-900 mb-8">
-               Universal <br />
-               <span className="text-gradient">Security.</span>
+            <h1 className="text-5xl sm:text-7xl lg:text-[8rem] display-bold mb-6 leading-[0.9]">
+               <span className="text-[#10172A]">DIGITAL FRAUD.</span> <br />
+               <span className="text-[#6D4AFF]">STOPPED EARLY.</span>
             </h1>
             
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-end">
-              <div className="lg:col-span-8">
-                <p className="text-2xl sm:text-3xl text-slate-500 font-bold max-w-3xl leading-snug">
-                  {s.heroSubtitle}
-                </p>
-              </div>
-              <div className="lg:col-span-4 flex justify-start lg:justify-end pb-2">
-                <button 
-                  onClick={() => router.push('/analyze')}
-                  className="group relative inline-flex items-center gap-4 bg-slate-900 text-white px-10 py-6 rounded-full font-black uppercase tracking-widest overflow-hidden hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-slate-900/20"
-                >
-                  <span className="relative z-10">Start Audit</span>
-                  <div className="relative z-10 w-10 h-10 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
-                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                  </div>
-                  <div className="absolute inset-0 bg-[var(--brand-gradient)] translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
-                </button>
-              </div>
+            <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+              <p className="text-xl sm:text-[1.65rem] text-[#52647D] font-bold max-w-2xl leading-snug">
+                {s.heroSubtitle}
+              </p>
+              
+              <button 
+                onClick={() => router.push('/analyze')}
+                className="group relative inline-flex items-center justify-between bg-[#10172A] text-white w-full sm:w-[280px] px-7 py-4.5 rounded-full font-extrabold uppercase tracking-widest text-sm overflow-hidden hover:bg-[#6D4AFF] hover:-translate-y-1 active:translate-y-0 active:scale-95 transition-all duration-150 ease-out shadow-xl shadow-slate-900/10 shrink-0 cursor-pointer"
+              >
+                <span className="relative z-10">Start Audit</span>
+                <div className="relative z-10 w-8 h-8 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors duration-150">
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-150" />
+                </div>
+              </button>
             </div>
           </motion.div>
         </div>
@@ -98,14 +88,8 @@ export default function HomePage() {
       <section className="px-6 sm:px-12 py-10 pb-32">
         <div className="max-w-[1400px] mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 grid-rows-auto gap-6 bento-grid-overrides">
-            
-            {/* Main Interactive Check Card */}
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              className="md:col-span-2 lg:col-span-2 lg:row-span-2 bento-card border-2 border-indigo-100 flex flex-col justify-between"
-            >
+                        {/* Main Interactive Check Card */}
+            <div className="md:col-span-2 lg:col-span-2 lg:row-span-2 bento-card border-2 border-indigo-100 flex flex-col justify-between">
               <div className="relative z-10">
                 <h3 className="text-3xl font-black text-slate-900 uppercase tracking-tighter mb-4">Smart Check</h3>
                 <p className="text-slate-500 font-bold">Paste any message or link to verify its safety instantly in 4+ languages.</p>
@@ -118,37 +102,28 @@ export default function HomePage() {
                     <input 
                       type="text" 
                       placeholder={s.pasteMessage} 
-                      className="w-full bg-transparent border-none text-slate-700 placeholder:text-slate-400 font-bold"
+                      className="w-full bg-transparent border-none text-slate-700 placeholder:text-slate-400 font-bold focus:outline-none"
                       onFocus={() => router.push('/analyze')}
                     />
                   </div>
                   <button
                     onClick={() => router.push('/analyze')}
-                    className="bg-indigo-600 text-white font-black uppercase tracking-widest text-xs px-8 py-4 rounded-2xl hover:bg-slate-900 transition-colors"
+                    className="bg-indigo-600 text-white font-black uppercase tracking-widest text-xs px-8 py-4 rounded-2xl hover:bg-slate-900 transition-colors cursor-pointer"
                   >
                     Analyze
                   </button>
                 </div>
               </div>
+            </div>
 
-              {/* Decorative graphic */}
-              <div className="absolute -bottom-10 -right-10 w-48 h-48 bg-indigo-50 rounded-full blur-3xl -z-0" />
-            </motion.div>
-
-            {/* Live Call Card */}
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-              className="md:col-span-2 lg:col-span-2 bento-card group hover:bg-slate-900 group transition-colors duration-500"
-            >
+             {/* Live Call Card */}
+            <div className="md:col-span-2 lg:col-span-2 bento-card group hover:bg-slate-900 transition-colors cursor-pointer" onClick={() => router.push('/analyze?tab=live')}>
               <div className="flex justify-between items-start relative z-10">
                 <div>
                   <h3 className="text-3xl font-black text-slate-900 group-hover:text-white uppercase tracking-tighter mb-2 italic">Live Protection</h3>
                   <p className="text-slate-500 group-hover:text-slate-400 font-bold max-w-[200px]">Real-time detection for active phone calls.</p>
                 </div>
-                <div className="w-16 h-16 rounded-full bg-rose-50 flex items-center justify-center shrink-0 animate-soft-pulse border border-rose-100">
+                <div className="w-16 h-16 rounded-full bg-rose-50 flex items-center justify-center shrink-0 border border-rose-100">
                   <Mic className="w-8 h-8 text-rose-600" />
                 </div>
               </div>
@@ -158,65 +133,43 @@ export default function HomePage() {
               >
                 Launch Tracker <ArrowUpRight />
               </button>
-            </motion.div>
+            </div>
 
             {/* Stats: Total Scans */}
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-              className="bento-card bg-indigo-600 text-white border-none flex flex-col justify-between"
-            >
+            <div className="bento-card bg-indigo-600 text-white border-none flex flex-col justify-between">
               <TrendingUp className="w-8 h-8 opacity-40 mb-4" />
               <div>
                 <p className="text-5xl font-black tracking-tighter">1,247+</p>
                 <p className="text-[10px] font-black uppercase tracking-widest opacity-60">Success Scans</p>
               </div>
-            </motion.div>
+            </div>
 
             {/* Stats: High Risk */}
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.3 }}
-              className="bento-card border-rose-100 bg-rose-50/30 flex flex-col justify-between"
-            >
+            <div className="bento-card border-rose-100 bg-rose-50/30 flex flex-col justify-between">
               <ShieldAlert className="w-8 h-8 text-rose-600 mb-4" />
               <div>
                 <p className="text-5xl font-black tracking-tighter text-slate-900">342</p>
                 <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Scams Blocked</p>
               </div>
-            </motion.div>
+            </div>
 
              {/* Language Card */}
-             <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.4 }}
-              className="lg:col-span-1 bento-card flex flex-col justify-between group overflow-visible"
-            >
+             <div className="lg:col-span-1 bento-card flex flex-col justify-between group overflow-visible">
               <div className="flex gap-1 mb-4">
-                 <span className="w-6 h-6 rounded-lg bg-slate-100 flex items-center justify-center text-xs font-bold">हिं</span>
-                 <span className="w-6 h-6 rounded-lg bg-slate-100 flex items-center justify-center text-xs font-bold">த</span>
-                 <span className="w-6 h-6 rounded-lg bg-slate-100 flex items-center justify-center text-xs font-bold">म</span>
-                 <span className="w-6 h-6 rounded-lg bg-slate-100 flex items-center justify-center text-xs font-bold">En</span>
+                 <span className="w-6 h-6 rounded-lg bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-900">हिं</span>
+                 <span className="w-6 h-6 rounded-lg bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-900">த</span>
+                 <span className="w-6 h-6 rounded-lg bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-900">म</span>
+                 <span className="w-6 h-6 rounded-lg bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-900">En</span>
               </div>
               <div>
                 <h4 className="text-xl font-black text-slate-900 uppercase tracking-tighter leading-none mb-1">Vernacular</h4>
                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-tight">Native Intelligence</p>
               </div>
-            </motion.div>
+            </div>
 
              {/* Mission Card */}
-             <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.5 }}
-              className="lg:col-span-1 bento-card bg-slate-50 border-none flex flex-col justify-between hover:scale-[1.02]"
+             <div 
+              className="lg:col-span-1 bento-card bg-slate-50 border-none flex flex-col justify-between cursor-pointer"
               onClick={() => router.push('/about')}
             >
               <Heart className="w-8 h-8 text-rose-500 fill-rose-500/10 mb-6" />
@@ -226,16 +179,10 @@ export default function HomePage() {
                    <ArrowRight className="w-4 h-4" />
                 </div>
               </div>
-            </motion.div>
+            </div>
 
              {/* Feature Samples */}
-             <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.6 }}
-              className="md:col-span-2 lg:col-span-2 bento-card bg-slate-900 border-none p-0 overflow-hidden"
-            >
+             <div className="md:col-span-2 lg:col-span-2 bento-card bg-slate-900 border-none p-0 overflow-hidden">
               <div className="p-8 pb-4">
                  <h3 className="text-2xl font-black text-white uppercase tracking-tighter">Instant Sandbox</h3>
                  <p className="text-slate-400 text-sm font-bold">Test real-world scenarios with one click.</p>
@@ -246,7 +193,7 @@ export default function HomePage() {
                   trySampleLabel=""
                  />
               </div>
-            </motion.div>
+            </div>
 
           </div>
         </div>

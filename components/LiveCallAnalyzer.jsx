@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useCallback, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Mic, Square, Phone, ChevronDown, ChevronUp, AlertCircle, Sparkles, ShieldCheck } from 'lucide-react';
 import { generateSessionId, formatDuration } from '@/lib/utils.js';
 import WaveformCanvas from './WaveformCanvas.jsx';
@@ -15,6 +16,7 @@ const MAX_CONCURRENT   = 2;
 const SILENCE_THRESHOLD = 0.2;
 
 export default function LiveCallAnalyzer({ strings, language }) {
+  const router = useRouter();
   const [state, setState]                   = useState('IDLE');
   const [sessionId, setSessionId]           = useState('');
   const [chunks, setChunks]                 = useState([]);
@@ -66,8 +68,17 @@ export default function LiveCallAnalyzer({ strings, language }) {
 
   const triggerAlert = useCallback((result) => {
     setState('ALERT');
-    const phrase = result.highlightedPhrases?.map((p) => p.phrase).join(', ') || result.alertMessage || '';
-    setAlertPhrase(phrase);
+    // detectedTactics = plain strings (live call); highlightedPhrases = objects (text/audio)
+    const phrases =
+      result.detectedTactics?.length
+        ? result.detectedTactics.join(', ')
+        : result.highlightedPhrases
+            ?.map((p) => (typeof p === 'string' ? p : p.phrase))
+            .filter(Boolean)
+            .join(', ') ||
+          result.alertMessage ||
+          '';
+    setAlertPhrase(phrases);
     if (recorderRef.current && recorderRef.current.state === 'recording') {
       recorderRef.current.stop();
     }

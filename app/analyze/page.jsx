@@ -9,6 +9,7 @@ import { getUIStrings, detectUILanguage } from '@/lib/ui-strings.js';
 import { detectScript, charCount } from '@/lib/utils.js';
 import AudioUploadZone from '@/components/AudioUploadZone.jsx';
 import LiveCallAnalyzer from '@/components/LiveCallAnalyzer.jsx';
+import RakshamLogo from '@/components/RakshamLogo.jsx';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 
@@ -26,12 +27,21 @@ function AnalyzeContent() {
   const s = getUIStrings(lang);
 
   useEffect(() => {
-    setLang(detectUILanguage());
+    const syncLang = () => setLang(detectUILanguage());
+    syncLang();
+    window.addEventListener('storage', syncLang);
+    window.addEventListener('language-change', syncLang);
+
     const sample = sessionStorage.getItem('phishshield-sample');
     if (sample) {
       setText(sample);
       sessionStorage.removeItem('phishshield-sample');
     }
+
+    return () => {
+      window.removeEventListener('storage', syncLang);
+      window.removeEventListener('language-change', syncLang);
+    };
   }, []);
 
   const defaultTab = searchParams.get('tab') === 'live' ? 'live' : 'text';
@@ -128,7 +138,7 @@ function AnalyzeContent() {
         className="text-center mb-10"
       >
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-50 text-indigo-600 border border-indigo-100 mb-4 transition-all">
-          <ShieldCheck className="w-4 h-4" />
+          <RakshamLogo className="w-4 h-4" color="#4f46e5" />
           <span className="text-xs font-bold uppercase tracking-widest">{s.appName} Smart Check</span>
         </div>
         <h1 className="text-4xl font-extrabold text-slate-900 mb-4 tracking-tight">
@@ -197,7 +207,7 @@ function AnalyzeContent() {
             <button
               onClick={handleTextAnalysis}
               disabled={!text.trim() || analyzing}
-              className="w-full flex items-center justify-center gap-3 bg-[var(--brand-gradient)] disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-5 rounded-2xl shadow-xl shadow-indigo-500/20 hover:shadow-indigo-500/40 transition-all hover:scale-[1.01] active:scale-95 text-xl"
+              className="w-full flex items-center justify-center gap-3 bg-slate-900 hover:bg-indigo-600 disabled:opacity-40 disabled:cursor-not-allowed text-white font-black py-5 rounded-2xl shadow-xl transition-all hover:scale-[1.01] active:scale-95 text-xl tracking-wide uppercase"
             >
               {analyzing ? (
                 <>
